@@ -25,3 +25,7 @@ class CreateCharge(BaseModel):
 class ChargeList(BaseModel):
     data: List[Any]
     has_more: bool
+
+
+class ClientSecret(BaseModel):
+    clientSecret: str

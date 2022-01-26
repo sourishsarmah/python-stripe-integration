@@ -13,6 +13,7 @@ class Charge:
         pi = self.__paymentintent.create(
             amount=amount,
             currency=currency,
+            description=description,
             automatic_payment_methods={
                 "enabled": True,
             },
