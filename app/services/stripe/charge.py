@@ -1,26 +1,48 @@
+import requests
 import stripe
+from stripe import Charge, PaymentIntent, PaymentMethod, Refund
 
 from app.core.config import STRIPE_SECRET_KEY
 
 
-class Charge:
-    def __init__(self) -> None:
-        stripe.api_key = STRIPE_SECRET_KEY
-        self.__stripe = stripe
+class StripeCharge:
 
-    def create_charge(self, amount, currency="usd", description=None) -> str:
-        pi = self.__stripe.PaymentIntent.create(
+    api_key = STRIPE_SECRET_KEY
+
+    def __create_payment_method(self, card) -> PaymentMethod:
+        pm = PaymentMethod.create(type="card", card=dict(card), api_key=self.api_key)
+        return pm
+
+    def create_charge(self, amount, card, currency="inr", description=None) -> str:
+        pi = PaymentIntent.create(
             amount=amount,
             currency=currency,
             description=description,
-            automatic_payment_methods={
-                "enabled": True,
-            },
+            capture_method="manual",
+            api_key=self.api_key,
         )
-        return pi["client_secret"]
+
+        ps = self.__create_payment_method(card)
+
+        pi = stripe.PaymentIntent.confirm(
+            pi["id"], payment_method=ps, api_key=self.api_key
+        )
+
+        url = pi["next_action"]["use_stripe_sdk"]["stripe_js"]
+
+        requests.get(url)
+
+        charge = Charge.list(limit=1, api_key=self.api_key).get("data")[0]
+
+        return charge
+
+    def capture_charge(self, charge_id):
+        charge = Charge.retrieve(charge_id, api_key=self.api_key)
+        pi = PaymentIntent.capture(charge["payment_intent"], api_key=self.api_key)
+        return pi["charges"]["data"][0]
 
     def get_charge_list(self, limit=10):
-        return self.__stripe.Charge.list(limit=limit)
+        return Charge.list(limit=limit, api_key=self.api_key)
 
     def create_refund(self, charge_id):
-        return self.__stripe.Refund.create(charge=charge_id)
+        return Refund.create(charge=charge_id, api_key=self.api_key)
