@@ -10,6 +10,7 @@ fastapi = "^0.71.0"
 uvicorn = "^0.17.0"
 isort = "^5.10.1"
 autoflake = "^1.4"
+stripe = "^2.64.0"
 
 [tool.poetry.dev-dependencies]
 

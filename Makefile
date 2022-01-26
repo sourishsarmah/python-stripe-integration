@@ -23,5 +23,8 @@ lint:
 	black --check app --diff
 	isort --recursive --check-only app
 
+run_dev_server:
+	uvicorn app.main:app --reload
+
 run_server:
 	uvicorn app.main:app --reload
