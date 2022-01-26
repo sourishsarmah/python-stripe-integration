@@ -1,9 +1,9 @@
 from app.services.stripe.charge import StripeCharge
 
 
-def get_charges_dependency(limit):
+def get_charges_dependency(limit, starting_after=None):
     charge = StripeCharge()
-    return charge.get_charge_list(limit)
+    return charge.get_charge_list(limit, starting_after=None)
 
 
 def create_charge_dependency(amount, card, currency, description=None):

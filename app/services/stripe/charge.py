@@ -1,5 +1,4 @@
 import requests
-import stripe
 from stripe import Charge, PaymentIntent, PaymentMethod
 
 from app.core.config import STRIPE_SECRET_KEY
@@ -13,7 +12,7 @@ class StripeCharge:
         pm = PaymentMethod.create(type="card", card=dict(card), api_key=self.api_key)
         return pm
 
-    def create_charge(self, amount, card, currency="inr", description=None) -> str:
+    def create_charge(self, amount, card, currency="inr", description=None) -> Charge:
         pi = PaymentIntent.create(
             amount=amount,
             currency=currency,
@@ -36,10 +35,12 @@ class StripeCharge:
 
         return charge
 
-    def capture_charge(self, charge_id):
+    def capture_charge(self, charge_id) -> Charge:
         charge = Charge.retrieve(charge_id, api_key=self.api_key)
         pi = PaymentIntent.capture(charge["payment_intent"], api_key=self.api_key)
         return pi["charges"]["data"][0]
 
-    def get_charge_list(self, limit=10):
-        return Charge.list(limit=limit, api_key=self.api_key)
+    def get_charge_list(self, limit=10, starting_after=None):
+        return Charge.list(
+            limit=limit, starting_after=starting_after, api_key=self.api_key
+        )

@@ -19,8 +19,10 @@ router = APIRouter()
     response_model=ChargeList,
     name="GET:charges",
 )
-def get_charges(limit: Optional[int] = 10) -> ChargeList:
-    return get_charges_dependency(limit)
+def get_charges(
+    limit: Optional[int] = 10, starting_after: Optional[str] = None
+) -> ChargeList:
+    return get_charges_dependency(limit, starting_after)
 
 
 @router.post(
