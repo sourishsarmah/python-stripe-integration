@@ -1,11 +1,10 @@
 from typing import Any, List, Optional
 
 from pydantic import BaseModel
-from pydantic.json import UUID
 
 
 class Charge(BaseModel):
-    charge_id: UUID
+    charge_id: str
 
 
 class Card(BaseModel):
