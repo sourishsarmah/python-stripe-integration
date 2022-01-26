@@ -1,6 +1,6 @@
 import requests
 import stripe
-from stripe import Charge, PaymentIntent, PaymentMethod, Refund
+from stripe import Charge, PaymentIntent, PaymentMethod
 
 from app.core.config import STRIPE_SECRET_KEY
 
@@ -43,6 +43,3 @@ class StripeCharge:
 
     def get_charge_list(self, limit=10):
         return Charge.list(limit=limit, api_key=self.api_key)
-
-    def create_refund(self, charge_id):
-        return Refund.create(charge=charge_id, api_key=self.api_key)

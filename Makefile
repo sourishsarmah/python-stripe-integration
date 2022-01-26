@@ -15,16 +15,8 @@ format:
 	black app
 	isort app
 
-lint:
-	set -e
-	set -x
-	flake8 app --exclude=app/core/config.py
-	mypy app
-	black --check app --diff
-	isort --recursive --check-only app
-
 run_dev_server:
 	uvicorn app.main:app --reload
 
 run_server:
-	uvicorn app.main:app --reload
+	uvicorn app.main:app
