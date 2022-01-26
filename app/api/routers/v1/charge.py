@@ -1,9 +1,10 @@
-from typing import Optional
+from typing import Any, Optional
 
-from fastapi import APIRouter
-from starlette.status import HTTP_200_OK
+from fastapi import APIRouter, Body
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED
 
-from app.api.dependencies.charge import get_charges_dependency
+from app.api.dependencies.charge import (create_charge_dependency,
+                                         get_charges_dependency)
 from app.api.models.schemas.charge import ChargeList
 
 router = APIRouter()
@@ -17,3 +18,12 @@ router = APIRouter()
 )
 def get_charges(limit: Optional[int] = 10) -> ChargeList:
     return get_charges_dependency(limit)
+
+
+@router.post(
+    "/create_charge",
+    status_code=HTTP_201_CREATED,
+    name="POST:charge",
+)
+def create_charge(request_body=Body(...)) -> Any:
+    return {"clientSecret": create_charge_dependency(amount=1000, currency="inr")}
