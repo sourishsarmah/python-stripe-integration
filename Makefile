@@ -1,10 +1,3 @@
-#########################
-# DEFAULTS
-#########################
-GUINICORN_PORT = 8000
-GUINICORN_WORKERS = 1
-GUINICORN_TIME_OUT = 123
-
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
@@ -19,4 +12,10 @@ run_dev_server:
 	uvicorn app.main:app --reload
 
 run_server:
-	uvicorn app.main:app
+	uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+build_image:
+	docker build --pull --rm -f "Dockerfile" -t pythonstripeintegration:latest "."
+
+run_docker:
+	docker run --rm -d  -p 8000:8000/tcp pythonstripeintegration:latest
